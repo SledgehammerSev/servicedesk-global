@@ -3,11 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/hai-it-support/'
+  base: '/servicedesk-global/'
 })
-```
-
-After that, your deploy command will be:
-```
-npm run build
-npx gh-pages -d dist
