@@ -26,7 +26,7 @@ function li(uH,off){var raw=uH+off;return{h:((Math.floor(raw)%24)+24)%24,m:off%1
 function agWkH(a){var sl=a.e>a.s?a.e-a.s:24-(a.s-a.e);return sl*a.d.length;}
 function toU(lh,off){return((lh-off)%24+24)%24;}
 function dayShift(lh,off){var r=lh-off;return r<0?-1:r>=24?1:0;}
-function fH(h,u12){var hrs=Math.floor(h),mins=Math.round((h-hrs)*60),mm=String(mins).padStart(2,"0");if(!u12)return String(hrs).padStart(2,"0")+":"+mm;var p=hrs>=12?"PM":"AM",h12=hrs===0?12:hrs>12?hrs-12:hrs;return mins>0?h12+":"+mm+p:h12+p;}
+function fH(h,u12){var hrs=Math.floor(h),mins=Math.round((h-hrs)*60),mm=String(mins).padStart(2,"0");if(!u12)return String(hrs).padStart(2,"0")+":"+mm;var p=hrs>=12?"PM":"AM",h12=hrs===0?12:hrs>12?hrs-12:hrs;return mins>0?h12+":"+mm+" "+p:h12+" "+p;}
 function fR(s,e,u12){return fH(s,u12)+" - "+fH(e,u12);}
 function fDP(d){return d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
 function aO(a,dt){return eO(a.bo,a.loc,dt);}
