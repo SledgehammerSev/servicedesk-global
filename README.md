@@ -1,16 +1,56 @@
-# React + Vite
+# IT Support — ServiceDesk-Global
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A real-time coverage simulator and staffing planner for the harrison.ai global IT support team.
 
-Currently, two official plugins are available:
+**Live:** [https://harrison-ai.github.io/hai-it-support-servicedesk-global/](https://harrison-ai.github.io/hai-it-support-servicedesk-global/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What it does
 
-## React Compiler
+- **Who's on now** — Live view of which agents are currently on shift across all time zones, with drag-to-scrub time exploration
+- **Coverage heatmap** — 24hr × 7day coverage map per monitored location showing gaps, single-agent risk, and peak staffing in local time
+- **Agent perspectives** — Per-agent view showing solo hours, overlap breakdown, and handoff analysis
+- **Gap-fill modelling** — Suggest proposed agents to fill coverage gaps with configurable minimum staffing levels (1/hr, 2+/hr, 3+/hr)
+- **Staffing justification** — Auto-generated business case with base vs proposed coverage comparison, cost estimates in multiple currencies, and print/PDF export
+- **Multi-company coverage** — Switch between coverage models (24/7 all, business hours only, per-entity)
+- **DST-aware** — Automatic daylight saving adjustments for AU, NZ, US, CA, UK, and EU regions
+- **Public holidays** — Built-in holiday calendars for 16 countries (2025–2028)
+- **Save/load** — Export and import configurations as JSON, with localStorage defaults
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Locations covered
 
-## Expanding the ESLint configuration
+Sydney · Chennai · Ho Chi Minh City · London · New York · Austin · Los Angeles (and 50+ searchable cities)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech stack
+
+- **React 18** — UI framework
+- **Vite** — Build tool and dev server
+- **GitHub Pages** — Hosting (via `gh-pages`)
+- **No external dependencies** — All timezone, DST, holiday, and coverage logic is self-contained
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Local dev server with hot reload
+npm run dev
+
+# Build for production
+npm run build
+
+# Deploy to GitHub Pages
+npx gh-pages -d dist
+```
+
+## Project structure
+
+```
+src/
+├── App.jsx    — Full application (components, logic, data)
+└── main.jsx   — React mount point
+```
+
+## Maintainer
+
+John Manoukian — IT Support Lead, harrison.ai
