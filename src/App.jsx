@@ -333,7 +333,7 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
               {overlapList.length>0&&<div style={{marginBottom:10}}><div style={{fontSize:11,fontWeight:600,color:_txS2,marginBottom:4}}>Overlap breakdown</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{overlapList.map(function(o,i){var pct=Math.round(o.hours/totalH*100);return(<div key={i} style={{background:_bgW,border:"1px solid #e0dce8",borderRadius:5,padding:"4px 8px",fontSize:10}}><div style={{fontWeight:600}}>{o.name}</div><div style={{display:"flex",alignItems:"center",gap:4}}><div style={{width:50,height:4,background:"#eee",borderRadius:2,overflow:"hidden"}}><div style={{width:pct+"%",height:"100%",background:"#534AB7",borderRadius:2}}/></div><span style={{color:_txMt}}>{o.hours+"h ("+pct+"%)"}</span></div></div>);})}</div></div>}
               <div style={{fontSize:11,fontWeight:600,color:_txS2,marginBottom:4}}>{"Week view ("+ag.loc+" local)"}</div>
               <div style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}><table style={{borderCollapse:"collapse",fontSize:10,width:"100%",minWidth:400}}><thead><tr><th style={{textAlign:"left",padding:"3px 6px",color:_txMt,fontWeight:500,minWidth:50}}>Day</th>{Array.from({length:shiftLen},function(_,h){return(<th key={h} style={{padding:"3px 4px",textAlign:"center",color:_txMt,fontWeight:500,minWidth:28,fontSize:9}}>{fH((ag.s+h)%24,false)}</th>);})}</tr></thead><tbody>{weekData.map(function(wd,wi){var dayDate=new Date(hMon);dayDate.setDate(dayDate.getDate()+wd.dayIdx);var dayHol=gH(ag.loc,fD(dayDate));return(<tr key={wi} style={{borderBottom:"1px solid #eee"}}><td style={{padding:"3px 6px",fontWeight:600,whiteSpace:"nowrap"}}>{DY[wd.dayIdx]}{dayHol.length>0&&<span style={{color:"#E5A03E",fontSize:8,marginLeft:3}}>{" ★"}</span>}</td>{wd.hours.map(function(h,hi){var total=h.covering.length+1,isExp=wd.dayIdx===agExpDay&&h.localH===agExpH;var bg=isExp?"#e0d8f8":(total===1?"#f7e0e0":total===2?"#e8f0d4":"#d4ecc0");return(<td key={hi} title={total===1?"Solo":h.covering.map(function(a){return a.name;}).join(", ")} style={{padding:"2px 3px",textAlign:"center",background:bg,border:isExp?"2px solid #534AB7":"1px solid #f0eee8",fontSize:9,cursor:"default",fontWeight:600,color:total===1?"#9B3333":"#4A7A28"}}>{total}</td>);})}</tr>);})}</tbody></table></div>
-              <div style={{display:"flex",gap:10,fontSize:9,color:_txFt,marginTop:4,flexWrap:"wrap"}}><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#f7e0e0",borderRadius:2,display:"inline-block"}}/> 1=solo</span><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#e8f0d4",borderRadius:2,display:"inline-block"}}/> 2=you+1</span><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#d4ecc0",borderRadius:2,display:"inline-block"}}/> 3+=you+2+</span><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#e0d8f8",border:"2px solid #534AB7",borderRadius:2,display:"inline-block",boxSizing:"border-box"}}/> Selected time</span></div>
+              <div style={{display:"flex",gap:10,fontSize:9,color:_txFt,marginTop:4,flexWrap:"wrap"}}><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#f7e0e0",borderRadius:2,display:"inline-block"}}/> 1=solo</span><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#d0e8a0",borderRadius:2,display:"inline-block"}}/> 2=you+1</span><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#b8e6a0",borderRadius:2,display:"inline-block"}}/> 3+=you+2+</span><span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:10,height:10,background:"#e0d8f8",border:"2px solid #534AB7",borderRadius:2,display:"inline-block",boxSizing:"border-box"}}/> Selected time</span></div>
             </div>);
           }
         } else if(pvTab==="company"){
@@ -437,11 +437,11 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
         }
 
         function covColor(pct){
-          if(pct>=100)return{bg:"#d4ecc0",tx:"#2a5a18"};
-          if(pct>=80)return{bg:"#e8f0d4",tx:"#4a7a28"};
-          if(pct>=50)return{bg:"#fff3d0",tx:"#8a6a10"};
-          if(pct>0)return{bg:"#fde8d0",tx:"#9a5020"};
-          return{bg:"#f7d4d4",tx:"#9B3333"};
+          if(pct>=100)return{bg:"#b8e6a0",tx:"#1a5010"};
+          if(pct>=80)return{bg:"#d0e8a0",tx:"#3a6a18"};
+          if(pct>=50)return{bg:"#ffe080",tx:"#6a5000"};
+          if(pct>0)return{bg:"#ffb070",tx:"#7a3010"};
+          return{bg:"#ff8080",tx:"#7a1010"};
         }
 
         if(planView==="year"){
@@ -485,11 +485,11 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
                   })}</tr>);})}</tbody>
             </table></div>
             <div style={{display:"flex",gap:10,fontSize:10,color:_txFt,marginTop:8,flexWrap:"wrap"}}>
-              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#d4ecc0",borderRadius:2}}/> 100%</span>
-              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#e8f0d4",borderRadius:2}}/> 80-99%</span>
-              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fff3d0",borderRadius:2}}/> 50-79%</span>
-              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fde8d0",borderRadius:2}}/> 1-49%</span>
-              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#f7d4d4",borderRadius:2}}/> 0% (gap)</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#b8e6a0",borderRadius:2}}/> 100%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#d0e8a0",borderRadius:2}}/> 80-99%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#ffe080",borderRadius:2}}/> 50-79%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#ffb070",borderRadius:2}}/> 1-49%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#ff8080",borderRadius:2}}/> 0% (gap)</span>
               <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:4,height:4,borderRadius:"50%",background:"#E5A03E"}}/> Holiday</span>
             </div>
           </div>);
@@ -520,7 +520,7 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
             <div style={{display:"flex",gap:3}}>{[null].concat(allCats).map(function(c){var sel=planCat===c;var cc3=c?catC(c):null;return(<button key={c||"all"} onClick={function(){sPlanCat(c);}} style={{fontSize:10,padding:"2px 8px",borderRadius:4,border:sel?(c?"1.5px solid "+cc3.bd:"1.5px solid #555"):"1px solid #ddd",background:sel?(c?cc3.bg:"#f0f0ee"):"#fafafa",color:sel?(c?cc3.tx:"#333"):"#999",cursor:"pointer",fontWeight:sel?600:400}}>{c||"All"}</button>);})}</div>
             <button onClick={function(){var csv="Date,Day,Coverage%,Gaps,Solo,Agents\n";for(var d2=1;d2<=daysInMonth;d2++){var dt2=new Date(pY,pM,d2);var dc2=dayCov(dt2);csv+=fD(dt2)+","+DAYS[(dt2.getDay()+6)%7]+","+dc2.pct+","+dc2.gap+","+dc2.single+","+dc2.agCount+"\n";}var blob=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=MONTHS[pM]+"-"+pY+"-coverage.csv";a.click();}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txS2}}>Export CSV</button>
           </div>
-          {(function(){var vals=[];for(var sd=1;sd<=daysInMonth;sd++){var sdt=new Date(pY,pM,sd);vals.push(dayCov(sdt).pct);}var maxV=100,h2=30,w2=Math.max(vals.length*8,200);return(<svg viewBox={"0 0 "+w2+" "+h2} style={{width:"100%",height:30,marginBottom:8}}><rect x={0} y={0} width={w2} height={h2} fill="#f8f8f6" rx={4}/>{vals.map(function(v,i){var x=i*(w2/vals.length),bw=w2/vals.length-1,bh=v/maxV*h2;return(<rect key={i} x={x+0.5} y={h2-bh} width={bw} height={bh} rx={1} fill={v>=100?"#4A7A28":v>=80?"#7aaa48":v>=50?"#c8a030":"#c05050"} opacity={0.7}/>);})}<line x1={0} y1={h2*0.2} x2={w2} y2={h2*0.2} stroke="#4A7A28" strokeWidth={0.5} strokeDasharray="3 3" opacity={0.4}/></svg>);})()}
+          {(function(){var vals=[];for(var sd=1;sd<=daysInMonth;sd++){var sdt=new Date(pY,pM,sd);vals.push(dayCov(sdt).pct);}var maxV=100,h2=30,w2=Math.max(vals.length*8,200);return(<svg viewBox={"0 0 "+w2+" "+h2} style={{width:"100%",height:30,marginBottom:8}}><rect x={0} y={0} width={w2} height={h2} fill="#f8f8f6" rx={4}/>{vals.map(function(v,i){var x=i*(w2/vals.length),bw=w2/vals.length-1,bh=v/maxV*h2;return(<rect key={i} x={x+0.5} y={h2-bh} width={bw} height={bh} rx={1} fill={v>=100?"#4A9A18":v>=80?"#7ab830":v>=50?"#c8a020":"#d05030"} opacity={0.7}/>);})}<line x1={0} y1={h2*0.2} x2={w2} y2={h2*0.2} stroke="#4A7A28" strokeWidth={0.5} strokeDasharray="3 3" opacity={0.4}/></svg>);})()}
           <table style={{borderCollapse:"collapse",width:"100%",tableLayout:"fixed"}}>
             <thead><tr>{DAYS.map(function(d2){return(<th key={d2} style={{padding:"6px",textAlign:"center",fontWeight:600,color:_txS2,fontSize:12}}>{d2}</th>);})}</tr></thead>
             <tbody>{weeks.map(function(wk,wi){return(<tr key={wi}>{wk.map(function(day,di){
@@ -539,11 +539,11 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
             })}</tr>);})}</tbody>
           </table>
           <div style={{display:"flex",gap:10,fontSize:10,color:_txFt,marginTop:8,flexWrap:"wrap"}}>
-            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#d4ecc0",borderRadius:2}}/> 100%</span>
-            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#e8f0d4",borderRadius:2}}/> 80-99%</span>
-            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fff3d0",borderRadius:2}}/> 50-79%</span>
-            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fde8d0",borderRadius:2}}/> 1-49%</span>
-            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#f7d4d4",borderRadius:2}}/> 0% (gap)</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#b8e6a0",borderRadius:2}}/> 100%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#d0e8a0",borderRadius:2}}/> 80-99%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#ffe080",borderRadius:2}}/> 50-79%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#ffb070",borderRadius:2}}/> 1-49%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#ff8080",borderRadius:2}}/> 0% (gap)</span>
             <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:6,height:6,borderRadius:"50%",background:"#E5A03E"}}/> Holiday</span>
             <span style={{color:_txMt}}>Click a day to jump to it</span>
           </div>
