@@ -159,7 +159,7 @@ function App(){
   var _ri=useState(1),rfI=_ri[0],sRI=_ri[1];
   var _hmhl=useState(null),hmHL=_hmhl[0],sHmHL=_hmhl[1];
   var _shRst=useState(true),shRst=_shRst[0],sShRst=_shRst[1];
-  var _ishift=useState(null),inlineShift=_ishift[0],sIS=_ishift[1];var _utcHov=useState(null),utcHov=_utcHov[0],sUtcHov=_utcHov[1];var _uc=useState([]),userCats=_uc[0],sUC=_uc[1];var _dm=useState(false),darkMode=_dm[0],sDM=_dm[1];var _fOn=useState(false),flashOn=_fOn[0],sFOn=_fOn[1];var _pvTab=useState("company"),pvTab=_pvTab[0],sPvTab=_pvTab[1];var _mt=useState("whosOn"),mainTab=_mt[0],sMT=_mt[1];
+  var _ishift=useState(null),inlineShift=_ishift[0],sIS=_ishift[1];var _utcHov=useState(null),utcHov=_utcHov[0],sUtcHov=_utcHov[1];var _uc=useState([]),userCats=_uc[0],sUC=_uc[1];var _dm=useState(false),darkMode=_dm[0],sDM=_dm[1];var _fOn=useState(false),flashOn=_fOn[0],sFOn=_fOn[1];var _pvTab=useState("company"),pvTab=_pvTab[0],sPvTab=_pvTab[1];var _mt=useState("whosOn"),mainTab=_mt[0],sMT=_mt[1];var _pv2=useState("month"),planView=_pv2[0],sPlanView=_pv2[1];var _pd2=useState(function(){return new Date();}),planDate=_pd2[0],sPlanDate=_pd2[1];
   var _pvVCo=useState("all"),pvVCo=_pvVCo[0],sPvVCo=_pvVCo[1];
   var _pvVCat=useState("IT Support"),pvVCat=_pvVCat[0],sPvVCat=_pvVCat[1];var _pvCoSub=useState("overview"),pvCoSub=_pvCoSub[0],sPvCoSub=_pvCoSub[1];
   var _hmhc=useState({s:9,e:17}),hmHC=_hmhc[0],sHmHC=_hmhc[1];
@@ -237,7 +237,7 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
         </div>
       </div>
 
-      <div style={{display:"flex",gap:0,borderBottom:"2px solid #dde4f0",marginBottom:12,marginTop:8}}>{[{id:"whosOn",label:"Who\'s on"},{id:"tzView",label:"Timezone View"},{id:"heatmap",label:"Heatmap"},{id:"config",label:"Configuration"},{id:"coverage",label:"Coverage"}].map(function(t){var sel=mainTab===t.id;return(<button key={t.id} onClick={function(){sMT(t.id);}} style={{fontSize:12,fontWeight:sel?700:500,padding:"8px 16px",border:"none",borderBottom:sel?"2px solid #185FA5":"2px solid transparent",background:"none",color:sel?"#185FA5":"#666",cursor:"pointer",marginBottom:"-2px"}}>{t.label}</button>);})}</div>
+      <div style={{display:"flex",gap:0,borderBottom:"2px solid #dde4f0",marginBottom:12,marginTop:8}}>{[{id:"whosOn",label:"Who\'s on"},{id:"tzView",label:"Timezone View"},{id:"heatmap",label:"Heatmap"},{id:"config",label:"Configuration"},{id:"coverage",label:"Coverage"},{id:"planning",label:"Planning"}].map(function(t){var sel=mainTab===t.id;return(<button key={t.id} onClick={function(){sMT(t.id);}} style={{fontSize:12,fontWeight:sel?700:500,padding:"8px 16px",border:"none",borderBottom:sel?"2px solid #185FA5":"2px solid transparent",background:"none",color:sel?"#185FA5":"#666",cursor:"pointer",marginBottom:"-2px"}}>{t.label}</button>);})}</div>
       {/* EXPLORER + WHO'S ON */}
       <div style={{background:(mainTab==="whosOn"||mainTab==="tzView")?_bgTh:"transparent",border:(mainTab==="whosOn"||mainTab==="tzView")?"1px solid #b8d8f0":"none",borderRadius:10,padding:(mainTab==="whosOn"||mainTab==="tzView")?"14px 16px":"0",marginBottom:(mainTab==="whosOn"||mainTab==="tzView")?14:0}}>
         <div data-np="1" style={{display:(mainTab==="whosOn"||mainTab==="tzView")?"flex":"none",gap:4,marginBottom:10,alignItems:"center",flexWrap:"nowrap",overflowX:"auto",WebkitOverflowScrolling:"touch",paddingBottom:4}}>
@@ -405,6 +405,141 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
         {st.pr.length===0&&<p style={{fontStyle:"italic",color:_txMt}}>Use "Fill gaps" above to model proposed agents and generate a staffing case.</p>}
       </div>
 
+      
+      {mainTab==="planning"&&(function(){
+        var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        var DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+        var pY=planDate.getFullYear(),pM=planDate.getMonth();
+
+        function dayCov(date){
+          var dy=(date.getDay()+6)%7;
+          var dt=date;
+          var rqH=0,covH=0,gapH=0,singleH=0;
+          for(var h=0;h<24;h++){
+            if(!isRq(coObj,h,dy))continue;
+            rqH++;
+            var total=0;
+            fL.forEach(function(loc){
+              var off=lO(loc,dt);
+              var utcH=((h-off)%24+24)%24;
+              total+=cAt(act,utcH,dy,dt);
+            });
+            if(total===0)gapH++;
+            else if(total===1)singleH++;
+            covH+=(total>0?1:0);
+          }
+          var pct=rqH>0?Math.round(covH/rqH*100):100;
+          var ds=fD(date);
+          var hols=[];
+          fL.forEach(function(loc){var h2=gH(loc.name,ds);if(h2.length>0)hols=hols.concat(h2);});
+          return{pct:pct,gap:gapH,single:singleH,hols:hols,rq:rqH};
+        }
+
+        function covColor(pct){
+          if(pct>=100)return{bg:"#d4ecc0",tx:"#2a5a18"};
+          if(pct>=80)return{bg:"#e8f0d4",tx:"#4a7a28"};
+          if(pct>=50)return{bg:"#fff3d0",tx:"#8a6a10"};
+          if(pct>0)return{bg:"#fde8d0",tx:"#9a5020"};
+          return{bg:"#f7d4d4",tx:"#9B3333"};
+        }
+
+        if(planView==="year"){
+          var rows=[];
+          for(var m=0;m<12;m++){
+            var first=new Date(pY,m,1);
+            var daysInMonth=new Date(pY,m+1,0).getDate();
+            var days=[];
+            for(var d=1;d<=daysInMonth;d++){
+              var date=new Date(pY,m,d);
+              var dc=dayCov(date);
+              days.push({d:d,date:date,dc:dc,dow:(date.getDay()+6)%7});
+            }
+            rows.push({m:m,name:MONTHS[m],days:days});
+          }
+          return(<div style={{marginBottom:14}}>
+            <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:12,flexWrap:"wrap"}}>
+              <button onClick={function(){sPlanDate(new Date(pY-1,0,1));}} style={{fontSize:14,padding:"2px 8px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txMt}}>{"\u2039"}</button>
+              <span style={{fontSize:16,fontWeight:700,color:_txM,minWidth:60,textAlign:"center"}}>{pY}</span>
+              <button onClick={function(){sPlanDate(new Date(pY+1,0,1));}} style={{fontSize:14,padding:"2px 8px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txMt}}>{"\u203A"}</button>
+              <button onClick={function(){sPlanView("month");}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:"#185FA5",fontWeight:600}}>Month view</button>
+              <button onClick={function(){sPlanDate(new Date());}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1.5px solid #4A7A28",background:"#edf5e4",cursor:"pointer",color:"#3A6A14",fontWeight:600}}>Today</button>
+            </div>
+            <div style={{overflowX:"auto"}}><table style={{borderCollapse:"collapse",fontSize:10,width:"100%"}}>
+              <thead><tr><th style={{padding:"4px 6px",textAlign:"left",fontWeight:600,color:_txS2,width:40}}>Month</th>
+                {Array.from({length:31},function(_,i){return(<th key={i} style={{padding:"2px",textAlign:"center",fontWeight:400,color:_txFt,width:22,minWidth:22}}>{i+1}</th>);})}</tr></thead>
+              <tbody>{rows.map(function(row){
+                var isThisMonth=pY===new Date().getFullYear()&&row.m===new Date().getMonth();
+                return(<tr key={row.m}>
+                  <td style={{padding:"4px 6px",fontWeight:isThisMonth?700:500,color:isThisMonth?"#185FA5":_txS2,cursor:"pointer"}} onClick={function(){sPlanDate(new Date(pY,row.m,1));sPlanView("month");}}>{row.name}</td>
+                  {Array.from({length:31},function(_,i){
+                    var day=row.days.find(function(d2){return d2.d===i+1;});
+                    if(!day)return(<td key={i} style={{background:"#f8f8f6"}}/>);
+                    var cc2=covColor(day.dc.pct);
+                    var isToday=fD(day.date)===fD(new Date());
+                    var isWe=day.dow>=5;
+                    return(<td key={i} onClick={function(){sPD(gMon(day.date));var nd=(day.date.getDay()+6)%7;chgPv(nd*48+pvH*2);sMT("whosOn");}} style={{background:cc2.bg,color:cc2.tx,fontWeight:isToday?800:600,textAlign:"center",padding:"3px 0",cursor:"pointer",border:isToday?"2px solid #185FA5":"1px solid rgba(255,255,255,0.6)",opacity:isWe?0.6:1,position:"relative"}} title={fDP(day.date)+"\n"+day.dc.pct+"% coverage"+(day.dc.gap>0?" · "+day.dc.gap+"h gaps":"")+(day.dc.hols.length>0?" · "+day.dc.hols.join(", "):"")}>{day.dc.pct<100?day.dc.pct:""}{day.dc.hols.length>0&&<div style={{position:"absolute",top:0,right:1,width:4,height:4,borderRadius:"50%",background:"#E5A03E"}}/>}</td>);
+                  })}</tr>);})}</tbody>
+            </table></div>
+            <div style={{display:"flex",gap:10,fontSize:10,color:_txFt,marginTop:8,flexWrap:"wrap"}}>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#d4ecc0",borderRadius:2}}/> 100%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#e8f0d4",borderRadius:2}}/> 80-99%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fff3d0",borderRadius:2}}/> 50-79%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fde8d0",borderRadius:2}}/> 1-49%</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#f7d4d4",borderRadius:2}}/> 0% (gap)</span>
+              <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:4,height:4,borderRadius:"50%",background:"#E5A03E"}}/> Holiday</span>
+            </div>
+          </div>);
+        }
+
+        var first=new Date(pY,pM,1);
+        var daysInMonth=new Date(pY,pM+1,0).getDate();
+        var startDow=(first.getDay()+6)%7;
+        var weeks=[];
+        var week=[];
+        for(var i=0;i<startDow;i++)week.push(null);
+        for(var d=1;d<=daysInMonth;d++){
+          var date=new Date(pY,pM,d);
+          var dc=dayCov(date);
+          week.push({d:d,date:date,dc:dc,dow:(date.getDay()+6)%7});
+          if(week.length===7){weeks.push(week);week=[];}
+        }
+        if(week.length>0){while(week.length<7)week.push(null);weeks.push(week);}
+
+        return(<div style={{marginBottom:14}}>
+          <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:12,flexWrap:"wrap"}}>
+            <button onClick={function(){sPlanDate(new Date(pY,pM-1,1));}} style={{fontSize:14,padding:"2px 8px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txMt}}>{"\u2039"}</button>
+            <span style={{fontSize:16,fontWeight:700,color:_txM,minWidth:120,textAlign:"center"}}>{MONTHS[pM]+" "+pY}</span>
+            <button onClick={function(){sPlanDate(new Date(pY,pM+1,1));}} style={{fontSize:14,padding:"2px 8px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txMt}}>{"\u203A"}</button>
+            <button onClick={function(){sPlanView("year");}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:"#185FA5",fontWeight:600}}>Year view</button>
+            <button onClick={function(){sPlanDate(new Date());}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1.5px solid #4A7A28",background:"#edf5e4",cursor:"pointer",color:"#3A6A14",fontWeight:600}}>Today</button>
+          </div>
+          <table style={{borderCollapse:"collapse",width:"100%",tableLayout:"fixed"}}>
+            <thead><tr>{DAYS.map(function(d2){return(<th key={d2} style={{padding:"6px",textAlign:"center",fontWeight:600,color:_txS2,fontSize:12}}>{d2}</th>);})}</tr></thead>
+            <tbody>{weeks.map(function(wk,wi){return(<tr key={wi}>{wk.map(function(day,di){
+              if(!day)return(<td key={di} style={{background:"#fafaf8",border:"1px solid #f0f0ec"}}/>);
+              var cc2=covColor(day.dc.pct);
+              var isToday=fD(day.date)===fD(new Date());
+              var isWe=day.dow>=5;
+              return(<td key={di} onClick={function(){sPD(gMon(day.date));var nd=(day.date.getDay()+6)%7;chgPv(nd*48+pvH*2);sMT("whosOn");}} style={{background:cc2.bg,border:isToday?"2px solid #185FA5":"1px solid rgba(255,255,255,0.6)",padding:"8px 4px",textAlign:"center",cursor:"pointer",verticalAlign:"top",opacity:isWe?0.7:1,position:"relative"}}>
+                <div style={{fontWeight:isToday?800:600,fontSize:13,color:cc2.tx}}>{day.d}</div>
+                <div style={{fontSize:11,fontWeight:700,color:cc2.tx}}>{day.dc.pct}%</div>
+                {day.dc.gap>0&&<div style={{fontSize:9,color:"#9B3333"}}>{day.dc.gap+"h gap"}</div>}
+                {day.dc.single>0&&<div style={{fontSize:9,color:"#8a6a10"}}>{day.dc.single+"h solo"}</div>}
+                {day.dc.hols.length>0&&<div style={{position:"absolute",top:2,right:2,width:6,height:6,borderRadius:"50%",background:"#E5A03E"}} title={day.dc.hols.join(", ")}/>}
+              </td>);
+            })}</tr>);})}</tbody>
+          </table>
+          <div style={{display:"flex",gap:10,fontSize:10,color:_txFt,marginTop:8,flexWrap:"wrap"}}>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#d4ecc0",borderRadius:2}}/> 100%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#e8f0d4",borderRadius:2}}/> 80-99%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fff3d0",borderRadius:2}}/> 50-79%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#fde8d0",borderRadius:2}}/> 1-49%</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:12,height:12,background:"#f7d4d4",borderRadius:2}}/> 0% (gap)</span>
+            <span style={{display:"flex",alignItems:"center",gap:3}}><div style={{width:6,height:6,borderRadius:"50%",background:"#E5A03E"}}/> Holiday</span>
+            <span style={{color:_txMt}}>Click a day to jump to it</span>
+          </div>
+        </div>);
+      })()}
       {tip&&tip.type==="vOnly"&&(<div style={{position:"fixed",left:Math.max((tip.x||0)-130,10),top:Math.max((tip.y||0)-115,10),background:_bgW,border:"1px solid #fbbf24",borderRadius:6,padding:"8px 12px",fontSize:11,boxShadow:"0 2px 10px rgba(0,0,0,0.12)",zIndex:999,pointerEvents:"none",maxWidth:260}}><div style={{fontWeight:600,marginBottom:4,color:"#b45309"}}>Visual only</div><div style={{color:_txS,lineHeight:1.5}}>{"The hour highlight only dims cells outside the selected range — it does not change any coverage calculations. To model actual staffing impact, use the Coverage selector and Fill gaps tool above."}</div></div>)}{tip&&tip.type!=="vOnly"&&<div ref={tipElRef} style={{position:"fixed",left:0,top:0,background:_bgW,border:"1px solid "+_bdL,borderRadius:6,padding:"6px 10px",fontSize:11,boxShadow:"0 2px 8px rgba(0,0,0,0.1)",zIndex:999,pointerEvents:"none",maxWidth:220}}>{tip.type==="utcLine"?(<div><div style={{fontWeight:600,marginBottom:4,color:_txS}}>Local times</div>{tip.lines.map(function(l,i){return(<div key={i} style={{padding:"1px 0",color:l.on?"#1a1a1a":"#bbb"}}><span style={{fontWeight:l.on?600:400}}>{l.name}</span>{" — "+l.time+" "+l.tz}</div>);})}</div>):tip.type==="utcOvAg"?(<div><div style={{fontWeight:600,marginBottom:2,color:_txM}}>{tip.name}</div><div style={{color:_txS2,fontSize:12}}>{fH(tip.localH,u12)+" "+tip.tz}</div><div style={{fontSize:9,color:_txFt,marginTop:2}}>{"UTC "+fH(tip.utcH,false)}</div></div>):(<span><b>{tip.loc}</b>{" "+tip.day+" "+tip.h}<br/>{tip.rq?"Required":"Outside"}{" · "+tip.cnt+" agent"+(tip.cnt!==1?"s":"")}{tip.ags&&tip.ags.length>0&&<div style={{marginTop:2,color:_txS2}}>{tip.ags.map(function(a){return a.name;}).join(", ")}</div>}</span>)}</div>}
     </div>);
 }
