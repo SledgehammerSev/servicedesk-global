@@ -159,7 +159,7 @@ function App(){
   var _ri=useState(1),rfI=_ri[0],sRI=_ri[1];
   var _hmhl=useState(null),hmHL=_hmhl[0],sHmHL=_hmhl[1];
   var _shRst=useState(true),shRst=_shRst[0],sShRst=_shRst[1];
-  var _ishift=useState(null),inlineShift=_ishift[0],sIS=_ishift[1];var _utcHov=useState(null),utcHov=_utcHov[0],sUtcHov=_utcHov[1];var _uc=useState([]),userCats=_uc[0],sUC=_uc[1];var _dm=useState(false),darkMode=_dm[0],sDM=_dm[1];var _fOn=useState(false),flashOn=_fOn[0],sFOn=_fOn[1];var _pvTab=useState("company"),pvTab=_pvTab[0],sPvTab=_pvTab[1];var _mt=useState("whosOn"),mainTab=_mt[0],sMT=_mt[1];var _pv2=useState("month"),planView=_pv2[0],sPlanView=_pv2[1];var _pd2=useState(function(){return new Date();}),planDate=_pd2[0],sPlanDate=_pd2[1];
+  var _ishift=useState(null),inlineShift=_ishift[0],sIS=_ishift[1];var _utcHov=useState(null),utcHov=_utcHov[0],sUtcHov=_utcHov[1];var _uc=useState([]),userCats=_uc[0],sUC=_uc[1];var _dm=useState(false),darkMode=_dm[0],sDM=_dm[1];var _fOn=useState(false),flashOn=_fOn[0],sFOn=_fOn[1];var _pvTab=useState("company"),pvTab=_pvTab[0],sPvTab=_pvTab[1];var _mt=useState("whosOn"),mainTab=_mt[0],sMT=_mt[1];var _pv2=useState("month"),planView=_pv2[0],sPlanView=_pv2[1];var _pd2=useState(function(){return new Date();}),planDate=_pd2[0],sPlanDate=_pd2[1];var _pc=useState(null),planCat=_pc[0],sPlanCat=_pc[1];
   var _pvVCo=useState("all"),pvVCo=_pvVCo[0],sPvVCo=_pvVCo[1];
   var _pvVCat=useState("IT Support"),pvVCat=_pvVCat[0],sPvVCat=_pvVCat[1];var _pvCoSub=useState("overview"),pvCoSub=_pvCoSub[0],sPvCoSub=_pvCoSub[1];
   var _hmhc=useState({s:9,e:17}),hmHC=_hmhc[0],sHmHC=_hmhc[1];
@@ -414,15 +414,15 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
         function dayCov(date){
           var dy=(date.getDay()+6)%7;
           var dt=date;
+          var filtAgs=planCat?act.filter(function(a){return gSk(a).some(function(sk){return sk.cat===planCat;});}):act;
           var rqH=0,covH=0,gapH=0,singleH=0;
+          var onAgs={};
           for(var h=0;h<24;h++){
             if(!isRq(coObj,h,dy))continue;
             rqH++;
             var total=0;
-            fL.forEach(function(loc){
-              var off=lO(loc,dt);
-              var utcH=((h-off)%24+24)%24;
-              total+=cAt(act,utcH,dy,dt);
+            filtAgs.forEach(function(a){
+              if(isOn(a,h,dy,dt)){total++;onAgs[a.name]={loc:a.loc,s:a.s,e:a.e};}
             });
             if(total===0)gapH++;
             else if(total===1)singleH++;
@@ -432,7 +432,8 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
           var ds=fD(date);
           var hols=[];
           fL.forEach(function(loc){var h2=gH(loc.name,ds);if(h2.length>0)hols=hols.concat(h2);});
-          return{pct:pct,gap:gapH,single:singleH,hols:hols,rq:rqH};
+          var agList=Object.keys(onAgs).map(function(n){var a=onAgs[n];return n+" ("+a.loc+" "+fH(a.s,false)+"-"+fH(a.e,false)+")";});
+          return{pct:pct,gap:gapH,single:singleH,hols:hols,rq:rqH,ags:agList,agCount:Object.keys(onAgs).length};
         }
 
         function covColor(pct){
@@ -463,6 +464,9 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
               <button onClick={function(){sPlanDate(new Date(pY+1,0,1));}} style={{fontSize:14,padding:"2px 8px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txMt}}>{"\u203A"}</button>
               <button onClick={function(){sPlanView("month");}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:"#185FA5",fontWeight:600}}>Month view</button>
               <button onClick={function(){sPlanDate(new Date());}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1.5px solid #4A7A28",background:"#edf5e4",cursor:"pointer",color:"#3A6A14",fontWeight:600}}>Today</button>
+              <span style={{width:1,height:16,background:"#ddd",margin:"0 4px"}}/>
+              <div style={{display:"flex",gap:3}}>{[null].concat(allCats).map(function(c){var sel=planCat===c;var cc3=c?catC(c):null;return(<button key={c||"all"} onClick={function(){sPlanCat(c);}} style={{fontSize:10,padding:"2px 8px",borderRadius:4,border:sel?(c?"1.5px solid "+cc3.bd:"1.5px solid #555"):"1px solid #ddd",background:sel?(c?cc3.bg:"#f0f0ee"):"#fafafa",color:sel?(c?cc3.tx:"#333"):"#999",cursor:"pointer",fontWeight:sel?600:400}}>{c||"All"}</button>);})}</div>
+              <button onClick={function(){var csv="Date,Coverage%,Gaps,Solo,Agents\n";for(var m2=0;m2<12;m2++){var dim=new Date(pY,m2+1,0).getDate();for(var d2=1;d2<=dim;d2++){var dt2=new Date(pY,m2,d2);var dc2=dayCov(dt2);csv+=fD(dt2)+","+dc2.pct+","+dc2.gap+","+dc2.single+","+dc2.agCount+"\n";}}var blob=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=pY+"-coverage.csv";a.click();}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txS2}}>Export CSV</button>
             </div>
             <div style={{overflowX:"auto"}}><table style={{borderCollapse:"collapse",fontSize:10,width:"100%"}}>
               <thead><tr><th style={{padding:"4px 6px",textAlign:"left",fontWeight:600,color:_txS2,width:40}}>Month</th>
@@ -477,7 +481,7 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
                     var cc2=covColor(day.dc.pct);
                     var isToday=fD(day.date)===fD(new Date());
                     var isWe=day.dow>=5;
-                    return(<td key={i} onClick={function(){sPD(gMon(day.date));var nd=(day.date.getDay()+6)%7;chgPv(nd*48+pvH*2);sMT("whosOn");}} style={{background:cc2.bg,color:cc2.tx,fontWeight:isToday?800:600,textAlign:"center",padding:"3px 0",cursor:"pointer",border:isToday?"2px solid #185FA5":"1px solid rgba(255,255,255,0.6)",opacity:isWe?0.6:1,position:"relative"}} title={fDP(day.date)+"\n"+day.dc.pct+"% coverage"+(day.dc.gap>0?" · "+day.dc.gap+"h gaps":"")+(day.dc.hols.length>0?" · "+day.dc.hols.join(", "):"")}>{day.dc.pct<100?day.dc.pct:""}{day.dc.hols.length>0&&<div style={{position:"absolute",top:0,right:1,width:4,height:4,borderRadius:"50%",background:"#E5A03E"}}/>}</td>);
+                    return(<td key={i} onClick={function(){sPD(gMon(day.date));var nd=(day.date.getDay()+6)%7;chgPv(nd*48+pvH*2);sMT("whosOn");}} title={fDP(day.date)+"\n"+day.dc.pct+"% · "+day.dc.agCount+" agents"+(day.dc.gap>0?"\n"+day.dc.gap+"h gaps":"")+(day.dc.ags.length>0?"\n"+day.dc.ags.join("\n"):"")+(day.dc.hols.length>0?"\n"+day.dc.hols.join(", "):"")} style={{background:isWe?"#f0eee8":cc2.bg,border:isToday?"2px solid #185FA5":"1px solid rgba(255,255,255,0.6)",opacity:isWe?0.5:1,position:"relative"}}>{day.dc.pct<100?day.dc.pct:""}{day.dc.hols.length>0&&<div style={{position:"absolute",top:0,right:1,width:4,height:4,borderRadius:"50%",background:"#E5A03E"}}/>}</td>);
                   })}</tr>);})}</tbody>
             </table></div>
             <div style={{display:"flex",gap:10,fontSize:10,color:_txFt,marginTop:8,flexWrap:"wrap"}}>
@@ -512,7 +516,11 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
             <button onClick={function(){sPlanDate(new Date(pY,pM+1,1));}} style={{fontSize:14,padding:"2px 8px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txMt}}>{"\u203A"}</button>
             <button onClick={function(){sPlanView("year");}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:"#185FA5",fontWeight:600}}>Year view</button>
             <button onClick={function(){sPlanDate(new Date());}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1.5px solid #4A7A28",background:"#edf5e4",cursor:"pointer",color:"#3A6A14",fontWeight:600}}>Today</button>
+            <span style={{width:1,height:16,background:"#ddd",margin:"0 4px"}}/>
+            <div style={{display:"flex",gap:3}}>{[null].concat(allCats).map(function(c){var sel=planCat===c;var cc3=c?catC(c):null;return(<button key={c||"all"} onClick={function(){sPlanCat(c);}} style={{fontSize:10,padding:"2px 8px",borderRadius:4,border:sel?(c?"1.5px solid "+cc3.bd:"1.5px solid #555"):"1px solid #ddd",background:sel?(c?cc3.bg:"#f0f0ee"):"#fafafa",color:sel?(c?cc3.tx:"#333"):"#999",cursor:"pointer",fontWeight:sel?600:400}}>{c||"All"}</button>);})}</div>
+            <button onClick={function(){var csv="Date,Day,Coverage%,Gaps,Solo,Agents\n";for(var d2=1;d2<=daysInMonth;d2++){var dt2=new Date(pY,pM,d2);var dc2=dayCov(dt2);csv+=fD(dt2)+","+DAYS[(dt2.getDay()+6)%7]+","+dc2.pct+","+dc2.gap+","+dc2.single+","+dc2.agCount+"\n";}var blob=new Blob([csv],{type:"text/csv"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=MONTHS[pM]+"-"+pY+"-coverage.csv";a.click();}} style={{fontSize:11,padding:"4px 10px",borderRadius:4,border:"1px solid "+_bdI,background:_bgW,cursor:"pointer",color:_txS2}}>Export CSV</button>
           </div>
+          {(function(){var vals=[];for(var sd=1;sd<=daysInMonth;sd++){var sdt=new Date(pY,pM,sd);vals.push(dayCov(sdt).pct);}var maxV=100,h2=30,w2=Math.max(vals.length*8,200);return(<svg viewBox={"0 0 "+w2+" "+h2} style={{width:"100%",height:30,marginBottom:8}}><rect x={0} y={0} width={w2} height={h2} fill="#f8f8f6" rx={4}/>{vals.map(function(v,i){var x=i*(w2/vals.length),bw=w2/vals.length-1,bh=v/maxV*h2;return(<rect key={i} x={x+0.5} y={h2-bh} width={bw} height={bh} rx={1} fill={v>=100?"#4A7A28":v>=80?"#7aaa48":v>=50?"#c8a030":"#c05050"} opacity={0.7}/>);})}<line x1={0} y1={h2*0.2} x2={w2} y2={h2*0.2} stroke="#4A7A28" strokeWidth={0.5} strokeDasharray="3 3" opacity={0.4}/></svg>);})()}
           <table style={{borderCollapse:"collapse",width:"100%",tableLayout:"fixed"}}>
             <thead><tr>{DAYS.map(function(d2){return(<th key={d2} style={{padding:"6px",textAlign:"center",fontWeight:600,color:_txS2,fontSize:12}}>{d2}</th>);})}</tr></thead>
             <tbody>{weeks.map(function(wk,wi){return(<tr key={wi}>{wk.map(function(day,di){
@@ -520,9 +528,10 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
               var cc2=covColor(day.dc.pct);
               var isToday=fD(day.date)===fD(new Date());
               var isWe=day.dow>=5;
-              return(<td key={di} onClick={function(){sPD(gMon(day.date));var nd=(day.date.getDay()+6)%7;chgPv(nd*48+pvH*2);sMT("whosOn");}} style={{background:cc2.bg,border:isToday?"2px solid #185FA5":"1px solid rgba(255,255,255,0.6)",padding:"8px 4px",textAlign:"center",cursor:"pointer",verticalAlign:"top",opacity:isWe?0.7:1,position:"relative"}}>
-                <div style={{fontWeight:isToday?800:600,fontSize:13,color:cc2.tx}}>{day.d}</div>
-                <div style={{fontSize:11,fontWeight:700,color:cc2.tx}}>{day.dc.pct}%</div>
+              return(<td key={di} onClick={function(){sPD(gMon(day.date));var nd=(day.date.getDay()+6)%7;chgPv(nd*48+pvH*2);sMT("whosOn");}} title={day.dc.ags.length>0?day.dc.ags.join("\n"):"No agents"} style={{background:isWe?"#f4f2ee":cc2.bg,border:isToday?"2px solid #185FA5":"1px solid "+(isWe?"#e8e4dc":"rgba(255,255,255,0.6)"),padding:"8px 4px",textAlign:"center",cursor:"pointer",verticalAlign:"top",position:"relative"}}>
+                <div style={{fontWeight:isToday?800:600,fontSize:13,color:isWe?"#888":cc2.tx}}>{day.d}</div>
+                <div style={{fontSize:11,fontWeight:700,color:isWe?"#999":cc2.tx}}>{day.dc.pct}%</div>
+                <div style={{fontSize:9,color:"#777"}}>{day.dc.agCount+" agent"+(day.dc.agCount!==1?"s":"")}</div>
                 {day.dc.gap>0&&<div style={{fontSize:9,color:"#9B3333"}}>{day.dc.gap+"h gap"}</div>}
                 {day.dc.single>0&&<div style={{fontSize:9,color:"#8a6a10"}}>{day.dc.single+"h solo"}</div>}
                 {day.dc.hols.length>0&&<div style={{position:"absolute",top:2,right:2,width:6,height:6,borderRadius:"50%",background:"#E5A03E"}} title={day.dc.hols.join(", ")}/>}
