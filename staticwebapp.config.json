@@ -24,15 +24,15 @@
     },
     {
       "route": "/",
-      "allowedRoles": ["allowed"]
+      "allowedRoles": ["authenticated"]
     },
     {
       "route": "/index.html",
-      "allowedRoles": ["allowed"]
+      "allowedRoles": ["authenticated"]
     },
     {
       "route": "/*",
-      "allowedRoles": ["allowed"]
+      "allowedRoles": ["authenticated"]
     }
   ],
   "responseOverrides": {
