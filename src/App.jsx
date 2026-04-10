@@ -237,7 +237,7 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
         </div>
       </div>
 
-      <div style={{display:"flex",gap:0,borderBottom:"2px solid #dde4f0",marginBottom:12,marginTop:8}}>{[{id:"whosOn",label:"Who\'s on"},{id:"tzView",label:"Timezone View"},{id:"heatmap",label:"Heatmap"},{id:"config",label:"Configuration"},{id:"coverage",label:"Coverage"},{id:"planning",label:"Planning"}].map(function(t){var sel=mainTab===t.id;return(<button key={t.id} onClick={function(){sMT(t.id);}} style={{fontSize:12,fontWeight:sel?700:500,padding:"8px 16px",border:"none",borderBottom:sel?"2px solid #185FA5":"2px solid transparent",background:"none",color:sel?"#185FA5":"#666",cursor:"pointer",marginBottom:"-2px"}}>{t.label}</button>);})}</div>
+      <div style={{display:"flex",gap:0,borderBottom:"2px solid #dde4f0",marginBottom:12,marginTop:8}}>{[{id:"whosOn",label:"Who\'s on"},{id:"tzView",label:"Timezone View"},{id:"heatmap",label:"Heatmap"},{id:"config",label:"Configuration"},{id:"roster",label:"Roster"},{id:"coverage",label:"Coverage"},{id:"planning",label:"Planning"}].map(function(t){var sel=mainTab===t.id;return(<button key={t.id} onClick={function(){sMT(t.id);}} style={{fontSize:12,fontWeight:sel?700:500,padding:"8px 16px",border:"none",borderBottom:sel?"2px solid #185FA5":"2px solid transparent",background:"none",color:sel?"#185FA5":"#666",cursor:"pointer",marginBottom:"-2px"}}>{t.label}</button>);})}</div>
       {/* EXPLORER + WHO'S ON */}
       <div style={{background:(mainTab==="whosOn"||mainTab==="tzView")?_bgTh:"transparent",border:(mainTab==="whosOn"||mainTab==="tzView")?"1px solid #b8d8f0":"none",borderRadius:10,padding:(mainTab==="whosOn"||mainTab==="tzView")?"14px 16px":"0",marginBottom:(mainTab==="whosOn"||mainTab==="tzView")?14:0}}>
         <div data-np="1" style={{display:(mainTab==="whosOn"||mainTab==="tzView")?"flex":"none",gap:4,marginBottom:10,alignItems:"center",flexWrap:"nowrap",overflowX:"auto",WebkitOverflowScrolling:"touch",paddingBottom:4}}>
@@ -364,7 +364,7 @@ var sugLvlRef=useRef(null);sugLvlRef.current=sugLvl;
       </div>
 
       {/* ROSTER */}
-      <div data-np="1" style={{display:mainTab==="coverage"?"block":"none",marginBottom:14,border:"1px solid "+_bdM,borderRadius:10,overflow:"hidden"}}>
+      <div data-np="1" style={{display:mainTab==="roster"?"block":"none",marginBottom:14,border:"1px solid "+_bdM,borderRadius:10,overflow:"hidden"}}>
         <div style={{display:"flex",alignItems:"center",background:_bgP}}><button onClick={function(){sShRst(function(p){return !p;});}} style={{flex:1,display:"flex",alignItems:"center",gap:8,padding:"10px 16px",background:"transparent",border:"none",cursor:"pointer",fontSize:13,fontWeight:600,color:_txM,textAlign:"left"}}><span style={{transform:shRst?"rotate(90deg)":"rotate(0deg)",transition:"transform 0.15s",display:"inline-block"}}>{">"}</span>{"Agent Roster"}{!shRst&&<span style={{fontSize:11,fontWeight:400,color:_txMt}}>{" ("+act.length+" agents)"}</span>}</button><button onClick={function(){navigator.clipboard&&navigator.clipboard.writeText(act.map(function(a){return a.name;}).join("\n"));}} style={{fontSize:11,padding:"4px 10px",margin:"0 10px",borderRadius:5,border:"1px solid "+_bdL,background:_bgW,color:_txS,cursor:"pointer",whiteSpace:"nowrap"}}>{"Copy names"}</button></div>
         {shRst&&(<div style={{padding:"12px 16px",overflowX:"auto"}}>
           <table style={{borderCollapse:"collapse",width:"100%",minWidth:600,fontSize:12}}>
