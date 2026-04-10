@@ -15,11 +15,7 @@
   },
   "routes": [
     {
-      "route": "/.auth/login/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/.auth/logout/*",
+      "route": "/.auth/*",
       "allowedRoles": ["anonymous"]
     },
     {
