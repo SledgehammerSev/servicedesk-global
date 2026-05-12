@@ -1,6 +1,7 @@
 # ServiceDesk Global Coverage Tool
 
 A real-time coverage simulator and staffing planner for globally distributed IT support teams.
+- Built using Claude Code
 
 Live: https://sledgehammersev.github.io/servicedesk-global/
 
